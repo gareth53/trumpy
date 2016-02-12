@@ -1,0 +1,158 @@
+<!doctype html>
+<html>
+<head>
+<script>
+
+var trmp = {
+	
+	card_spec: [], // list of attribute names, units and high/low precedence
+	cards: [], // list of all cards
+	/*
+	a card is an object with these attribute patterns...
+	card = {
+		'img_url': 'http://images.com/card1.jpg',
+		'name': 'Dachshund',
+		'values': [200, 5, 123, 999, 12] // these are type Numbers
+	}
+	*/
+	player1_cards: [],
+	player2_cards: [],
+
+	init: function(card_spec, cards) {
+		this.card_spec = card_spec;
+		this.cards = cards;
+	},
+
+	start_game: function() {
+		this.shuffle_pack();
+		this.deal_cards();
+	},
+
+	shuffle_pack: function() {
+		var cards = this.cards;
+		cards.sort(function() {
+			return (Math.random() > 0.5)
+		});
+		return cards;
+	},
+
+	deal_cards: function() {
+		var hand_size = Math.floor(this.cards.length/2);
+		this.player1_cards = cards.splice(0, hand_size);
+		this.player2_cards = cards;
+	},
+
+	display_counts: function() {
+		document.getElementById('p1count').value = this.player1_cards.length;
+		document.getElementById('p2count').value = this.player2_cards.length;
+	},
+
+	get_turn_cards: function() {
+
+	},
+
+	compare_cards: function(attr, card1, card2) {
+
+	},
+
+	display_cards: function() {
+
+	}
+};
+
+
+card_spec: [
+	{
+		'label': "Appearances",
+		'units': '',
+		'high': true
+	},
+	{
+		'label': "Goals",
+		'units': '',
+		'high': true
+	},
+	{
+		'label': "Height",
+		'units': 'metres',
+		'high': true
+	},
+	{
+		'label': "Goals per Game",
+		'units': '',
+		'high': true
+	},
+	{
+		'label': "Best Season Total",
+		'units': '',
+		'high': true
+	},
+	// Best Season Tally
+	// hat-trick,
+	// consecutive mathes
+],
+cards: [
+	['Andy Booth', 		[293, 150, 1.82, 0.51, 30]],
+	['Marcus Stewart', 	[133, 67, 1.78, 0.50, 26]],
+	['Pawel Abbot', 	[111, 51, 1.85, 0.46, 27]],
+	['Duncan Shearer', 	[83,  48, 1.78, 0.58, 25]],
+	['Ronnie Jepson', 	[107, 42, 1.85, 0.39, 23]],
+	['Craig Maskell', 	[87,  55, 1.78, 0.63, 33]],
+	['Jordan Rhodes', 	[124, 87, 1.85, 0.70, 36]],
+	['Iwan Roberts', 	[142, 68, 1.91, 0.48, 35]],
+	['Jimmy Glazzard', 	[299, 154, 1.83, 0.52, 32]],
+	['Vic Metcalfe', 	[434, 90,  1.80, 0.21, 15]],
+	['Lee Novak', 		[144, 42, 1.83, 0.30, 17]],
+	['Phil Starbuck', 	[137, 47, 1.78, 0.34, 18]],
+	['Leon Knight', 	[38,  17, 1.6, 0.48, 17]],
+	['Andy Payton', 	[51,  20, 1.75, 0.39, 19]],
+	['Wayne Allison', 	[74, 17, 1.80, 0.23, 13]]
+	// Clyde Wijnhard [16]
+	// Kevin Gallen
+	// MArtin Smith 	[,17]
+	// Jpon Stead		[,18]
+	// Delroy Facey
+	// Les Massie
+	// Frank Worthington
+	// Mark Lillis
+	// Dave Hickson
+	// Harold Hassall
+	// Peter Doherty
+	// Dale Tempest
+	// Steve Kindon
+	// Ian Robins
+	// Mick BUtler
+	// Terry Gray
+	// Alan Dowling
+	// Frank Worthington
+	// Jimmy Lawson
+	// Colin Dobson
+	// Derek Stokes
+],
+
+
+
+</script>
+</head>
+<body>
+
+
+<div class="trump">
+
+	<div class="trump__p1_card"></div>
+
+	<div class="trump__p2_card"></div>
+
+	<div class="trump__ctrls">
+		<form class="trump__ctrols_form">
+			<button id="reset">Reset</button>
+			<input type="text" id="p1count" />
+			<input type="text" id="p2count" />
+		</form>
+	</div>
+
+</div>
+
+
+</body>
+</html>
