@@ -73,11 +73,92 @@ var cards = [
 	// Derek Stokes
 ];
 
+var trmp_game = {
+	
+	init: function() {
+		game = trmp.init(card_spec, cards);
+		trmp.start_game()
+		this.display();
+		// now attach click events
+		var that = this;
+		var links = document.getElementsByClassName('play');
+		for (var i=0; i<links.length; i++) {
+			links[i].addEventListener('click', function(e) {
+				e.preventDefault();
+				attribute = this.innerText;
+				trmp.complete_turn(attribute);
+				that.display();
+			});
+		}
+	},
+
+	display: function() {
+		this.display_scores();
+		this.display_cards();
+	},
+
+	display_scores: function() {
+		document.getElementById('p1_count').textContent = trmp.player1.cards.length;
+		document.getElementById('p2_count').textContent = trmp.player2.cards.length;
+	},
+
+	display_cards: function() {
+		var cards = trmp.get_turn_cards();
+		for (var i=0; i<2; i++) {
+			card = cards[i];
+			for (var q=0; q<card_spec.length; q++) {
+				var selector = "p" + i + "_v" + q;
+				document.getElementById(selector).textContent = card[card_spec[q].label] + card_spec[q].units;
+			}
+		}
+	}
+
+};
+
 
 
 </script>
 </head>
 <body>
+
+<div id="board_game">
+	<p>Turn: <span id="turn">0</span></p>
+	<div id="player1">
+		<h2>Player 1</h2>
+		<ul>
+			<li>Cards: <span id="p1_count"></span></li>
+		</ul>
+		<div id="p0_card">
+			<h2 class="p0_name"></h2>
+			<table>
+				<tr><th>Attribute	</th><th>Value</th></tr>
+				<tr><td><a href="#" class="play">Appearances		 </a></td><td id="p0_v0"></td></tr>
+				<tr><td><a href="#" class="play">Goals			 </a></td><td id="p0_v1"></td></tr>
+				<tr><td><a href="#" class="play">Height			 </a></td><td id="p0_v2"></td></tr>
+				<tr><td><a href="#" class="play">Goals per Game	 </a></td><td id="p0_v3"></td></tr>
+				<tr><td><a href="#" class="play">Best Season Total</a></td><td id="p0_v4"></td></tr>
+			</table>
+		</div>
+	</div>
+
+	<div id="player2">
+		<h2>Player 2</h2>
+		<ul>
+			<li>Cards: <span id="p2_count"></span></li>
+		</ul>
+		<div id="p1_card">
+			<h2 class="p0_name"></h2>
+			<table>
+				<tr><th>Attribute	</th><th>Value</th></tr>
+				<tr><td>Appearances		</td><td id="p1_v0"></td></tr>
+				<tr><td>Goals			</td><td id="p1_v1"></td></tr>
+				<tr><td>Height			</td><td id="p1_v2"></td></tr>
+				<tr><td>Goals per Game	</td><td id="p1_v3"></td></tr>
+				<tr><td>Best Season Total</td><td id="p1_v4"></td></tr>
+			</table>
+		</div>
+	</div>
+</div>
 
 
 </body>
