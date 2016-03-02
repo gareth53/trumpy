@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Trumpy QUnit Tests</title>
+  <link rel="stylesheet" href="qunit-git.css">
+</head>
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+  <script src="qunit-1.22.0.js"></script>
+  <script src="../trumpy.js"></script>
+
+
+  <script>
+	var card_spec = [
+		{
+			'label': "Attribute 1",
+			'units': '',
+			'high': true
+		},
+		{
+			'label': "Attribute 2",
+			'units': '',
+			'high': false
+		}
+	];
+	var cards = [
+		['Card A', [1, 1]],
+		['Card B', [2, 2]],
+		['Card C', [3, 3]],
+		['Card D', [4, 4]],
+	]
+	trmp.init(card_spec, cards);
+
+
+
+
+    QUnit.test( "test player_factory func", function( assert ) {
+      var value = trmp.player_factory('Gareth', 4);
+      assert.equal( value.name, "Gareth" );
+      assert.equal( value.memory, 4);
+      assert.equal( value.memorised.length, 0);
+    });
+
+    QUnit.test( "test player remembers cards", function( assert ) {
+      var player = trmp.player_factory('Gareth', 4);
+      player.remember_cards([1]);
+      assert.equal( player.memorised.length, 1);
+      player.remember_cards([2,3]);
+      assert.equal( player.memorised.length, 3);
+      player.remember_cards([4,5]);
+      assert.equal( player.memorised.length, 4);
+      assert.equal( player.memorised, '4,5,2,3');
+    });
+
+    QUnit.test( "test shuffle_pack function", function( assert ) {
+    	var cards = [0,1,2,3,4,5,6,7,8,9]
+    	trmp.cards = cards
+    	trmp.shuffle_pack();
+	    assert.equal(trmp.cards.length, cards.length);
+	    var checked = [];
+	    for (var i=0; i<cards.length;i++) {
+	    	var card_value = trmp.cards[i];
+	    	assert.notEqual(cards.indexOf(card_value), -1);
+	    	assert.equal(checked.indexOf(card_value), -1);
+	    	checked.push(card_value);
+	    }
+    });
+
+    QUnit.test( "test deal_cards function", function( assert ) {
+    	trmp.player1 = trmp.player_factory('Player A', 0);
+    	trmp.player2 = trmp.player_factory('Player B', 0);
+    	trmp.cards = [1,2,3,4,5,6,7,8,9];
+    	trmp.deal_cards();
+    	assert.equal(trmp.player1.cards.toString(), '1,2,3,4');
+    	assert.equal(trmp.player2.cards.toString(), '5,6,7,8,9');
+    });
+
+    QUnit.test( "test get_turn_cards function", function( assert ) {
+    	trmp.player1 = trmp.player_factory('Player A', 0);
+    	trmp.player2 = trmp.player_factory('Player B', 0);
+    	trmp.player1.cards = [1,2,3,4];
+    	trmp.player2.cards = [5,6,7,8];
+    	var cards = trmp.get_turn_cards();
+    	assert.equal(cards.toString(), '1,5');
+    });
+
+    QUnit.test( "test compare_cards function, simple", function( assert ) {
+      card1 = { 'attr1': 2 }
+      card2 = { 'attr1': 1 }
+      spec = [
+        {
+          'label': "attr1",
+          'high': true
+        }
+      ]
+      trmp.init(spec, [])
+      var result = trmp.compare_cards('attr1', [card1, card2]);
+      assert.equal(result, 0)
+    });
+
+    QUnit.test( "test compare_cards function, low score wins", function( assert ) {
+      card1 = { 'attr1': 2 }
+      card2 = { 'attr1': 1 }
+      spec = [
+        {
+          'label': "attr1",
+          'high': false
+        }
+      ]
+      trmp.init(spec, [])
+      var result = trmp.compare_cards('attr1', [card1, card2]);
+      assert.equal(result, 1)
+    });
+
+    QUnit.test( "test compare_cards function, tie", function( assert ) {
+      card1 = { 'attr1': 1 }
+      card2 = { 'attr1': 1 }
+      spec = [
+        {
+          'label': "attr1",
+          'high': true
+        }
+      ]
+      trmp.init(spec, [])
+      var result = trmp.compare_cards('attr1', [card1, card2]);
+      assert.equal(result, -1)
+    });
+
+    QUnit.test( "test compare_cards function, many cards", function( assert ) {
+      cards = [
+          { 'attr1': 1 },
+          { 'attr1': 1 },
+          { 'attr1': 10 },
+          { 'attr1': 1 },
+          { 'attr1': 1 },
+      ]
+      spec = [
+        {
+          'label': "attr1",
+          'high': true
+        }
+      ]
+      trmp.init(spec, [])
+      var result = trmp.compare_cards('attr1', cards);
+      assert.equal(result, 2)
+    });
+
+  </script>
+
+</body>
+</html>

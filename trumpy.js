@@ -13,11 +13,19 @@ var trmp = {
 		'values': [200, 5, 123, 999, 12] // these are type Numbers
 	}
 	*/
-	player_factory: function(memory) {
+	player_factory: function(name, memory) {
 		return {
+			name: name,
 			cards: [],		// cards in hand
-			memorised: [], // cards memorised
-			memory: memory //number of cards a player can remember being played
+			memorised: [],  // cards memorised
+			memory: memory, //number of cards a player can remember being played
+			remember_cards: function(cards) {
+				/*
+				cards = array of cards to remember
+				*/
+				var memorised = cards.concat(this.memorised);
+				this.memorised = memorised.slice(0, this.memory);
+			}
 		} 
 	},
 	
@@ -28,8 +36,8 @@ var trmp = {
 	cards_in_play: [],
 
 	init: function(card_spec, cards) {
-		this.player1 = this.player_factory(4);
-		this.player2 = this.player_factory(4);
+		this.player1 = this.player_factory('Bill', 4);
+		this.player2 = this.player_factory('Frank', 4);
         this.in_control = this.player1;
 		this.card_spec = card_spec;
 		var attrs = {};
@@ -76,8 +84,8 @@ var trmp = {
 
 	deal_cards: function(cards) {
 		var hand_size = Math.floor(this.cards.length/2);
-		this.player1.cards = cards.splice(0, hand_size);
-		this.player2.cards = cards;
+		this.player1.cards = this.cards.splice(0, hand_size);
+		this.player2.cards = this.cards;
 	},
 
 	get_turn_cards: function() {
@@ -99,20 +107,20 @@ var trmp = {
 		    winning_value = vals[0],
 			winning_index = 0;
 		for (var q=1; q<vals.length; q++) {
-			if (high && (vals[q] > winning_value)) {
-				winning_value = vals[q];
-				winning_index = q;
-			}
-			if (!high && (vals[q] < winning_value)) {
-				winning_value = vals[q];
-				winning_index = q;
-			}
 			if (vals[q] == winning_value) {
 				//tie
-				return -1
+				winning_index = -1
 			}
-			return winning_index;
+			else if (high && (vals[q] > winning_value)) {
+				winning_value = vals[q];
+				winning_index = q;
+			}
+			else if (!high && (vals[q] < winning_value)) {
+				winning_value = vals[q];
+				winning_index = q;
+			}
 		}
+		return winning_index;
 	},
 	
 	complete_turn: function(attr) {
